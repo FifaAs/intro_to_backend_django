@@ -9,8 +9,8 @@ def post_list(request):
 
 
 def post_detail(request,id):
-    posts = get_object_or_404(Post,id=id)
-    return render(request,'post/post_detail.html',{'post':posts})
+    post = get_object_or_404(Post,id=id)
+    return render(request,'post/post_detail.html',{'post':post})
 
 
 def post_create(request):
