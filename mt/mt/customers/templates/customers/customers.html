@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Имя</th>
+        <th scope="col">Номер телефона</th>
+        <th scope="col">Действие</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for c in customers %}
+      <tr>
+        <th scope="row">{{ c.id }}</th>
+        <td>{{ c.name }}</td>
+        <td>{{ c.phone}}</td>
+        <td><a href="{% url 'customer_detail' c.id %}" class="btn btn-primary">Детали</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Добавить клиента</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="name">Имя:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="phone">Телефон:</label>
+    <input type="text" id="phone" name="phone" required>
+
+    <button type="submit">Добавить</button>
+</form>
+{% endblock %}

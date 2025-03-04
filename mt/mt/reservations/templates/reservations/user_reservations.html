@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Мои брони</h2>
+<ul>
+    {% for reservation in reservations %}
+    <li>
+        <a href="{% url 'reservation_detail' reservation.id %}">
+            Столик {{ reservation.table.number }} на {{ reservation.date }} ({{ reservation.status }})
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

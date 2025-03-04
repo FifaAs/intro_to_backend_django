@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<select name="table_id" required>
+    {% for table in tables %}
+    <option value="{{ table.id }}">Столик №{{ table.number }} ({{ table.seats }} мест)</option>
+    {% empty %}
+    <option disabled>Нет доступных столиков</option>
+    {% endfor %}
+</select>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-light">Создать бронь</h2>
+    <form method="post" class="bg-dark p-4 rounded shadow">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="customer" class="form-label text-light">Клиент:</label>
+            <select name="customer_id" class="form-select bg-secondary text-light" required>
+                {% for customer in customers %}
+                <option value="{{ customer.id }}">{{ customer.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="table" class="form-label text-light">Столик:</label>
+            <select name="table_id" class="form-select bg-secondary text-light" required>
+                {% for table in tables %}
+                <option value="{{ table.id }}">Столик №{{ table.number }} ({{ table.seats }} мест)</option>
+                {% empty %}
+                <option disabled>Нет доступных столиков</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="date" class="form-label text-light">Дата:</label>
+            <input type="date" name="date" class="form-control bg-secondary text-light" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Забронировать</button>
+    </form>
+
+    <h2 class="text-light mt-5">Список всех броней</h2>
+    <div class="table-responsive">
+        <table class="table table-dark table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Клиент</th>
+                    <th>Столик</th>
+                    <th>Дата</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <td>{{ reservation.customer.name }}</td>
+                    <td>Столик №{{ reservation.table.number }}</td>
+                    <td>{{ reservation.date }}</td>
+                    <td>
+                        {% if reservation.status == "pending" %}
+                        <span class="badge bg-warning">Ожидание</span>
+                        {% elif reservation.status == "confirmed" %}
+                        <span class="badge bg-success">Подтверждено</span>
+                        {% else %}
+                        <span class="badge bg-danger">Отменено</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'reservation_detail' reservation.id %}" class="btn btn-info btn-sm">Детали</a>
+                        <a href="{% url 'delete_reservation' reservation.id %}" class="btn btn-danger btn-sm">Удалить</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-light">Бронирований пока нет</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

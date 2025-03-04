@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Информация о клиенте</h1>
+<p><strong>Имя:</strong> {{ customer.name }}</p>
+<p><strong>Телефон:</strong> {{ customer.phone }}</p>
+
+<h2>Забронированные столики</h2>
+{% if reservations %}
+    <ul>
+        {% for reservation in reservations %}
+            <li>Столик №{{ reservation.table.number }} - {{ reservation.date }} ({{ reservation.get_status_display }})</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>У клиента нет бронированных столиков.</p>
+{% endif %}
+
+{% endblock %}

@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Todo
 from .forms import TodoForm
 # Create your views here.
+
 def todo_list(request):
     if request.method == 'POST':
         form = TodoForm(request.POST)
@@ -22,4 +23,3 @@ def todo_delete(request,id):
 def todo_detail(request,id):
     todo = get_object_or_404(Todo,id=id)
     return render(request,'todo.html',{'todo':todo})
-

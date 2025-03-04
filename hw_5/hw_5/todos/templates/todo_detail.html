@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ todo.title }}</h2>
+    <p><strong>Описание:</strong> {{ todo.description }}</p>
+    <p><strong>Дата выполнения:</strong> {{ todo.due_date }}</p>
+    <p><strong>Статус:</strong> {% if todo.status %}Выполнено{% else %}В процессе{% endif %}</p>
+    
+    <a href="{% url 'todos' %}" class="btn btn-secondary">Назад</a>
+    <a href="{% url 'todo_edit' todo.id %}" class="btn btn-primary">Редактировать</a>
+    <form action="{% url 'todo_delete' todo.id %}" method="post" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Удалить</button>
+    </form>
+</div>
+{% endblock %}

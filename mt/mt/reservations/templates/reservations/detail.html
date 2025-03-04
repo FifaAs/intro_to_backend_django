@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Детали брони</h2>
+<p>Клиент: {{ reservation.customer.name }}</p>
+<p>Столик: {{ reservation.table.number }}</p>
+<p>Дата: {{ reservation.date }}</p>
+<p>Статус: {{ reservation.status }}</p>
+<a href="{% url 'update_reservation' reservation.id %}">Обновить</a>
+<a href="{% url 'delete_reservation' reservation.id %}">Удалить</a>
+{% endblock %}

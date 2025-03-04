@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table class="table">
+    <thead class = "thead-dark">
+    <tr><th>Название</th><th>Описание</th><th>Дата</th><th>Статус</th><th>Действие</th></tr>
+    </thead>
+{% for todo in todos %}
+<tr>
+    <td>{{ todo.title }}</td>
+    <td>{{ todo.description }}</td>
+    <td><a href="{% url 'todo_list_edit' id=thread.id %}" class="btn btn-success">Изменить</a>
+        <a href="{% url 'todo_list_delete' id=thread.id %}" class="btn btn-danger">Удалить</a>
+        <a href="{% url 'todo_list_detail' thread.id %}" class="btn btn-primary">Детали</a></td>
+</tr>
+{% endfor %}
+</table>
+<a href="{% url 'todo_create' %}">Add new todo</a>
+{% endblock %}

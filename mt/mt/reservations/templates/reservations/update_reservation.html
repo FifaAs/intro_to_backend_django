@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Обновить статус брони</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <label>Статус:</label>
+    <select name="status">
+        <option value="pending" {% if reservation.status == "pending" %}selected{% endif %}>В ожидании</option>
+        <option value="confirmed" {% if reservation.status == "confirmed" %}selected{% endif %}>Подтверждено</option>
+        <option value="canceled" {% if reservation.status == "canceled" %}selected{% endif %}>Отменено</option>
+    </select>
+
+    <button type="submit">Сохранить</button>
+</form>
+
+<a href="{% url 'reservation_detail' id=reservation.id %}">Назад</a>
+{% endblock %}
