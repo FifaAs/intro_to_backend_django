@@ -1,40 +1,34 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
 from .models import Todo
 from .forms import TodoForm
 
-def login_get(request):
-    if request.method == "GET":
-        return render(request, "login.html")  # Убедитесь, что есть return
-    return render(request, "todo_list.html")  # Или перенаправьте пользователя
-    
-def login_post(request):
+def login_view(request):
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username = username, password = password)
-        if user:
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
             login(request, user)
-            return redirect('')
-    return render(request, 'login.html')
+            return redirect("todos")  # Убедитесь, что такой URL существует
+        else:
+            return render(request, "login.html", {"error": "Неверные данные"})
+    return render(request, "login.html")
 
-def logout(request):
+def logout_view(request):
     logout(request)
     return redirect('login')
 
-@login_required
-def todos(request):
+def todos_view(request):
     todos = Todo.objects.filter(user=request.user)
-    return render(request, 'todo_list.html', {'todos':todos})
+    return render(request, 'todos.html', {'todos': todos})
 
 @login_required
 def todo_detail(request, id):
     todo = get_object_or_404(Todo, id=id, user=request.user)
     return render(request, 'todo_detail.html', {'todo': todo})
 
-# Создание todo
 @login_required
 def todo_create(request):
     if request.method == 'POST':
@@ -43,16 +37,24 @@ def todo_create(request):
             todo = form.save(commit=False)
             todo.user = request.user
             todo.save()
-            return redirect('todo_list')
+            return redirect('todos')
     else:
         form = TodoForm()
     return render(request, 'todo_create.html', {'form': form})
 
-# Удаление todo (только своего)
 @login_required
 def todo_delete(request, id):
     todo = get_object_or_404(Todo, id=id, user=request.user)
-    if todo.user != request.user:
-        return HttpResponseForbidden("You can't delete this todo.")
     todo.delete()
-    return redirect('todo_list')
+    return redirect('todos')
+
+def todo_edit(request, id):
+    todo = get_object_or_404(Todo, id=id)
+    if request.method == "POST":
+        form = TodoForm(request.POST, instance=todo)
+        if form.is_valid():
+            form.save()
+            return redirect("todos")  # Редирект обратно к списку
+    else:
+        form = TodoForm(instance=todo)
+    return render(request, "todo_edit.html", {"form": form})

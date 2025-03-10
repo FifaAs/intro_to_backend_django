@@ -1,17 +1,29 @@
 {% extends "base.html" %}
 
+{% block title %}{{ todo.title }}{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
-    <h2>{{ todo.title }}</h2>
-    <p><strong>Описание:</strong> {{ todo.description }}</p>
-    <p><strong>Дата выполнения:</strong> {{ todo.due_date }}</p>
-    <p><strong>Статус:</strong> {% if todo.status %}Выполнено{% else %}В процессе{% endif %}</p>
-    
-    <a href="{% url 'todos' %}" class="btn btn-secondary">Назад</a>
-    <a href="{% url 'todo_edit' todo.id %}" class="btn btn-primary">Редактировать</a>
-    <form action="{% url 'todo_delete' todo.id %}" method="post" class="d-inline">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Удалить</button>
-    </form>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title">{{ todo.title }}</h2>
+            <p class="card-text"><strong>Описание:</strong> {{ todo.description }}</p>
+            <p class="card-text"><strong>Дата:</strong> {{ todo.due_date }}</p>
+            <p class="card-text">
+                <strong>Статус:</strong> 
+                <span class="badge {% if todo.status %}bg-success{% else %}bg-warning{% endif %}">
+                    {% if todo.status %}Выполнено{% else %}В процессе{% endif %}
+                </span>
+            </p>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'todos' %}" class="btn btn-secondary">Назад</a>
+            <a href="{% url 'todo_edit' todo.id %}" class="btn btn-primary">Редактировать</a>
+            <form action="{% url 'todo_delete' todo.id %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Удалить</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
