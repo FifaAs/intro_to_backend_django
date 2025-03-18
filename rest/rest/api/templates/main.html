@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note API</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        input, textarea, button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+        .note {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Создать заметку</h2>
+    <input type="text" id="title" placeholder="Заголовок">
+    <textarea id="content" placeholder="Текст заметки"></textarea>
+    <button onclick="createNote()">Добавить</button>
+
+    <h2>Список заметок</h2>
+    <div id="notes"></div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000/api/notes/";
+
+        // Получение заметок
+        async function fetchNotes() {
+            try {
+                const response = await axios.get(API_URL);
+                const notes = response.data;
+                let html = "";
+                notes.forEach(note => {
+                    html += `
+                        <div class="note">
+                            <h3>${note.title}</h3>
+                            <p>${note.content}</p>
+                            <button class="delete-btn" onclick="deleteNote(${note.id})">Удалить</button>
+                        </div>
+                    `;
+                });
+                document.getElementById("notes").innerHTML = html;
+            } catch (error) {
+                console.error("Ошибка загрузки заметок", error);
+            }
+        }
+
+        // Создание заметки
+        async function createNote() {
+            const title = document.getElementById("title").value;
+            const content = document.getElementById("content").value;
+
+            if (title === "" || content === "") {
+                alert("Введите заголовок и текст!");
+                return;
+            }
+
+            try {
+                await axios.post(API_URL, { title, content });
+                document.getElementById("title").value = "";
+                document.getElementById("content").value = "";
+                fetchNotes();  // Обновляем список заметок
+            } catch (error) {
+                console.error("Ошибка при создании", error);
+            }
+        }
+
+        // Удаление заметки
+        async function deleteNote(noteId) {
+            try {
+                await axios.delete(`${API_URL}${noteId}/`);
+                fetchNotes();  // Обновляем список
+            } catch (error) {
+                console.error("Ошибка удаления", error);
+            }
+        }
+
+        // Загружаем заметки при загрузке страницы
+        fetchNotes();
+    </script>
+
+</body>
+</html>
